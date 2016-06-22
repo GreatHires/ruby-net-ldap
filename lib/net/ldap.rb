@@ -33,6 +33,7 @@ require 'net/ldap/auth_adapter/sasl'
 
 Net::LDAP::AuthAdapter.register([:simple, :anon, :anonymous], Net::LDAP::AuthAdapter::Simple)
 Net::LDAP::AuthAdapter.register(:sasl, Net::LDAP::AuthAdapter::Sasl)
+Net::LDAP::AuthAdapter.register(:gss_spnego, Net::LDAP::AuthAdapter::GssSpnego)
 
 # == Quick-start for the Impatient
 # === Quick Example of a user-authentication against an LDAP directory:
