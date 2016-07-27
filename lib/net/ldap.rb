@@ -788,6 +788,10 @@ class Net::LDAP
     end
   end
 
+  def current_page_cookie
+    conn.page_cookie
+  end
+
   # #bind connects to an LDAP server and requests authentication based on
   # the <tt>:auth</tt> parameter passed to #open or #new. It takes no
   # parameters.

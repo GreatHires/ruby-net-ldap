@@ -3,6 +3,8 @@
 class Net::LDAP::Connection #:nodoc:
   include Net::LDAP::Instrumentation
 
+  attr_reader :page_cookie
+
   # Seconds before failing for socket connect timeout
   DefaultConnectTimeout = 5
 
@@ -325,6 +327,7 @@ class Net::LDAP::Connection #:nodoc:
     size   = args[:size].to_i
     time   = args[:time].to_i
     paged  = args[:paged_searches_supported]
+    page_cookie  = args[:page_cookie] || ''
     sort   = args.fetch(:sort_controls, false)
 
     # arg validation
@@ -358,7 +361,7 @@ class Net::LDAP::Connection #:nodoc:
     # searches when the size limit is larger than 126. We're going to have
     # to do a root-DSE record search and not do a paged search if the LDAP
     # doesn't support it. Yuck.
-    rfc2696_cookie = [126, ""]
+    rfc2696_cookie = [126, page_cookie]
     result_pdu = nil
     n_results = 0
 
@@ -468,9 +471,9 @@ class Net::LDAP::Connection #:nodoc:
               # just in case some bogus server sends us more than 1 of these.
               more_pages = false
               if c.value and c.value.length > 0
-                cookie = c.value.read_ber[1]
-                if cookie and cookie.length > 0
-                  rfc2696_cookie[1] = cookie
+                @page_cookie = c.value.read_ber[1]
+                if @page_cookie and @page_cookie.length > 0
+                  rfc2696_cookie[1] = @page_cookie
                   more_pages = true
                 end
               end
