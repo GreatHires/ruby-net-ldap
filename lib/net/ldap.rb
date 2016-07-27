@@ -458,6 +458,7 @@ class Net::LDAP
   attr_accessor :port
   attr_accessor :hosts
   attr_accessor :base
+  attr_reader :page_cookie
 
   # Instantiate an object of type Net::LDAP to perform directory operations.
   # This constructor takes a Hash containing arguments, all of which are
@@ -775,6 +776,7 @@ class Net::LDAP
           result_set << entry if result_set
           yield entry if block_given?
         end
+        @current_page_cookie = conn.page_cookie
       end
 
       if return_result_set
@@ -787,10 +789,6 @@ class Net::LDAP
         @result.success?
       end
     end
-  end
-
-  def current_page_cookie
-    conn.page_cookie
   end
 
   # #bind connects to an LDAP server and requests authentication based on
